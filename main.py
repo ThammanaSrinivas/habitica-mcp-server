@@ -58,6 +58,20 @@ async def update_task(task_id: str, updates: dict) -> dict:
     """
     return await habitica_client.update_task(task_id, updates)
 
+@mcp.tool()
+async def get_user_tags() -> list:
+    """Get all user tags for the authenticated user as an array of tag objects"""
+    return await habitica_client.get_user_tags()
+
+@mcp.tool()
+async def add_tag_to_task(task_id: str, tag_id: str) -> dict:
+    """Add a tag to a task
+    Args:
+        task_id: The task _id or alias
+        tag_id: The tag id (UUID)
+    """
+    return await habitica_client.add_tag_to_task(task_id, tag_id)
+
 # Add a dynamic greeting resource
 @mcp.resource("greeting://{name}")
 def get_greeting(name: str) -> str:

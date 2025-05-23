@@ -86,4 +86,36 @@ class HabiticaClient:
                     raise Exception(f"Failed to update task: {error_text}")
                 
                 data = await response.json()
+                return data.get("data", {})
+
+    async def get_user_tags(self) -> List[Dict[str, Any]]:
+        """Get all tags for the authenticated user"""
+        async with aiohttp.ClientSession() as session:
+            async with session.get(
+                f"{self.api_url}/tags",
+                headers=self.headers
+            ) as response:
+                if response.status != 200:
+                    error_text = await response.text()
+                    raise Exception(f"Failed to get tags: {error_text}")
+                
+                data = await response.json()
+                return data.get("data", [])
+
+    async def add_tag_to_task(self, task_id: str, tag_id: str) -> Dict[str, Any]:
+        """Add a tag to a task
+        Args:
+            task_id: The task _id or alias
+            tag_id: The tag id (UUID)
+        """
+        async with aiohttp.ClientSession() as session:
+            async with session.post(
+                f"{self.api_url}/tasks/{task_id}/tags/{tag_id}",
+                headers=self.headers
+            ) as response:
+                if response.status != 200:
+                    error_text = await response.text()
+                    raise Exception(f"Failed to add tag to task: {error_text}")
+                
+                data = await response.json()
                 return data.get("data", {}) 
